@@ -4,12 +4,14 @@
 var express = require('express');
 var app = express();
 
-
 // MIDDLEWARE
 app.use(express.static('public'));
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// magicNumber global variable object
+var magicNumber = { number: 8 };
 
 // Allow CORS:
 // not necessary since we'll be making requests from a js file
@@ -43,12 +45,12 @@ The route should check the user's number against some target number variable
  should trigger a response of 'Too High'.*/
 app.get("/pickanumber", function (request, response) {
   var number = +request.query.number;
-  var targetNum = 8;
-  if (number == targetNum) {
+
+  if (magicNumber.number == number) {
     response.send("Nailed it!");
-  } else if (number < targetNum) {
+  } else if (magicNumber.number < number) {
     response.send("Too low...");
-  } else if (number > targetNum) {
+  } else if (magicNumber.number > number) {
     response.send("Too high...");
   } else {
     response.send("Hmm...not sure that's a number. Try again, goober.");
@@ -58,6 +60,7 @@ app.get("/pickanumber", function (request, response) {
 // pickanumber#Create
 app.post("/pickanumber", function (request, response) {
   var newTargetNum = +request.body.number;
+  magicNumber.number = newTargetNum;
   response.json(newTargetNum);
 });
 
